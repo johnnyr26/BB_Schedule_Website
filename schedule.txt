@@ -1,0 +1,149 @@
+x.add(Latin_I_501200,1,2);
+x.add(Living_Environment_w_LAB_PH301010,13,14,15);
+x.add(Living_Environment_w_LAB_PH301010,11,12,14);
+x.add(Living_Environment_w_LAB_PH301010,1,3,4);
+x.add(Living_Environment_w_LAB_PH301010,7,8,10);
+x.add(Living_Environment_w_LAB_PH301010,7,8,9);
+
+
+x.add(Living_Environment_PH30101i,7,8,10);//4 5b
+x.add(Living_Environment_PH30101i,13,14,15);//7 8a
+
+x.add(Algebra_1_w_Lab_201010,1,11,12);//would have more meshes 5A6A6B or 8B1A1B
+x.add(Learning_Center_9_921001,13,14);
+x.add(Learning_Center_9_921013,13);
+x.add(Learning_Center_9_921013,14);//make sure this is correct
+x.add(Learning_Center_9_921001,7,8);
+x.add(Learning_Center_9_921013,7);
+x.add(Learning_Center_9_921013,8);//make sure this is correct
+
+x.add(English_9_101010S,5,6);
+x.add(Algebra_I_Yr_1_201021,11,12);
+x.add(Foundations_of_Research_101043i,2);
+// x.add(Foundations_of_Research_101043,2);
+x.add(English_9_101010I,5,6);
+// x.add(English_9_101010,5,6);
+x.add(Global_History_Geography_9_401010I,3,4);
+// x.add(Global_History_Geography_9_401010,3,4);
+x.add(AP_Physics_1_w_lab_P309030,1,2,4);
+x.add(AP_Physics_1_w_lab_P309030,9,11,12);
+x.add(Physics_w_lab_PH301090,3,5,6);
+x.add(Physics_w_lab_PH301090,7,8,10);
+x.add(Physics_w_lab_PH301090,14,15,16);
+x.add(Applied_Physics_301080,13,14);
+x.add(Algebra_I_Yr_2_201210,11,12);
+x.add(Innovation_Design_721020,7,8);
+x.add(Honors_Engineering_Design_728020,7,8);
+
+x.add(Concert_Band_631010,15,16);
+
+x.add(Chorus_621103,16);
+// x.add(Intro_to_Science_Research_301033, 13);
+// holding off on this until scheduling others
+
+x.add(Musical_Theatre_Workshop_621023,15);
+
+x.add(Honors_Wind_Ensemble_638100, 5,6);
+x.add(College_Wind_Ensemble_637010, 5,6);
+x.add(Robotics_721063,2);
+x.add(Robotics_721063,13);
+x.add(AP_Italian_Language_Culture_509190,1,2);
+x.add(SUPA_College_Italian_507020,1,2);
+
+x.add(AP_Spanish_Language_Culture_509140, 1,2);
+
+x.add(AP_Spanish_Language_Culture_509140,11,12);
+x.add(SUPA_College_Spanish_507010,11,12);
+x.add(Honors_Shapers_of_the_World_108010,5,6);
+x.add(Honors_Shapers_of_the_World_108010,7,8);
+
+x.add(Advanced_Photo_Portfolio_611133,15);
+x.add(AP_2D_Design_619110, 15,16);
+x.add(Advanced_Photo_Portfolio_611130, 15,16);
+
+x.add(AP_Drawing_Portfolio_619060,1,2);
+
+x.add(English_11_101040I,3,4);
+x.add(English_11_101040,3,4);
+//have to add reg - done
+
+x.add(AP_Calculus_AB_209130,9,10);
+
+x.add(AP_Calculus_BC_209140,13,14);
+
+x.add(Calculus_201120,13,14);
+
+x.add(AP_Statistics_209120, 7,8);
+
+x.add(AP_Computer_Science_729010, 15,16);
+
+x.add(AP_Govt_Politics_409100,11,12);
+
+x.add(AP_Macroeconomics_409090,7,8);
+
+x.add(College_Career_Coop_Program_901011,3,4);
+
+x.add(Learning_Center_12_921004,7,8);
+x.add(Learning_Center_12_921004,11,12);
+x.add(Learning_Center_12_921043,7);
+x.add(Learning_Center_12_921043,8);
+x.add(Learning_Center_12_921043,11);
+x.add(Learning_Center_12_921043,12);
+
+x.add(Con_Law_Econ_CombinedI,9,10);
+x.add(Con_Law_Econ_Combined,5,6);
+x.add(Con_Law_Econ_Combined,9,10);
+
+x.add(Comparative_Literature_101050I,13,14);
+
+x.add(Comparative_Literature_101050,13,14);
+x.add(Comparative_Literature_101050,15,16);
+
+x.add(Honors_Italian_4_508180,13,14);
+
+x.add(Italian_4_501180,5,6);
+x.add(Italian_4_501180,13,14);
+
+x.add(United_States_History_401030I,15,16);
+
+x.add(Contemporary_Issues_401093,4);
+x.add(Contemporary_Issues_401093,15);
+
+x.add(Science_and_Society_301120,3,4);
+
+x.add(Earth_Science_w_lab_PH301150,15,16,1);
+
+x.add(Forensic_Science_301130,5,6);
+
+x.add(SUPA_Forensic_Science_307010,3,4);
+
+x.add(Portfolio_Development_611053,11);
+x.add(Portfolio_Development_611053,12);
+x.add(Advanced_Art_611043, 11);
+x.add(Advanced_Art_611043, 12);
+x.add(Advanced_Photo_Portfolio_611130, 11,12);
+x.add(Portfolio_Development_611050, 11,12);
+
+x.add(Topics_in_Algebra_II_201110,1,2);
+
+x.add(Topics_in_Applied_Math_201160,5,6);
+
+x.add(Algebra_I_201020,11,12);
+
+x.add(Honors_Computer_Science_728010,1,2);
+
+x.add(Learning_Center_11_921003,7);
+x.add(Learning_Center_11_921003,8);
+x.add(Learning_Center_11_921003,11);
+x.add(Learning_Center_11_921003,12);
+
+x.add(Theater_Arts_I_620103,9);
+
+x.add(Creative_Writing_101073,10);
+
+x.add(Geometry_B_201040,7,8);
+
+x.add(English_11_101040I,15,16);
+x.add(English_11_101040,15,16);
+
+x.add(Theater_Arts_II_Performance_Workshop_620203,15);
