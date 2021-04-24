@@ -1,7 +1,7 @@
 var express = require('express');
 const fs = require('fs');
+const getConflicts = require('../helpers/getConflicts');
 var router = express.Router();
-
 
 class Course {
   constructor(name, periods) {
@@ -66,16 +66,16 @@ router.get('/', function(req, res, next) {
         console.log('There was an error processing the data.');
         return;
     }
-    let courses = [];
+    let coursesArray= [];
     classNames = classNames.filter(course => course.length > 0);
     classNames.forEach((course, index) => {
         const periods = totalPeriods[index];
         const classCourse = new Course(course, periods);
-        courses.push(classCourse);
+        coursesArray.push(classCourse);
     });
     const uniqueCourses = new Set(classNames);
     uniqueCourses.forEach(className => {
-        const coursesWithName = courses.filter(course => course.name === className);
+        const coursesWithName = coursesArray.filter(course => course.name === className);
         let periods = coursesWithName.map(course => course.periods);
         periods = periods.map(JSON.stringify).reverse().filter((e, i, a) => {
           return a.indexOf(e, i + 1) === -1;
@@ -84,8 +84,22 @@ router.get('/', function(req, res, next) {
         setCourses.push(newCourse);
     });
     setCourses.sort((a, b) => a.name > b.name ? 1 : -1);
-    if (req.query.schedule) {
-        return res.send({courses: setCourses});
+    if (req.query.courses) {
+        const queryCourses = req.query.courses.split(',');
+        const courses = setCourses.filter(course => queryCourses.includes(course.name));
+        let conflictString = 'Conflicts: ';
+        let conflictedCourses = getConflicts(courses);
+        const flattenedArray = [].concat.apply([], conflictedCourses);
+        conflictedCourses = [...new Set(flattenedArray)];
+        conflictedCourses.forEach(conflictCourse => {
+            conflictString += conflictCourse.name + ', ';
+        });
+        if (conflictString !== 'Conflicts: ') {
+            conflictString = conflictString.slice(0, -2);
+        } else {
+            conflictString = '';
+        }
+        return res.send({ conflictedCourses, conflictString });
     }
     res.render('index', { courses: setCourses });
   });
