@@ -44,7 +44,7 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
             const periodToRemove = course.periods ? course.periods : '';
             const index = periods.indexOf(periodToRemove);
             periods.splice(index, 1);
-        } else {
+        } else if (button.textContent !== 'Reset') {
             button.className = 'squareOn';
             button.backgroundColor = 'green';
             button.style.backgroundColor = 'green';
