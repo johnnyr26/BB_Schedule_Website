@@ -1,4 +1,5 @@
 body, html {
+  width: 100%;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -51,7 +52,7 @@ button {
 }
 #search-bar {
   width: 100%;
-  margin: 20px;
+  margin: 10px;
   border-radius: 10px;
   height: 24px;
   padding: 10px;
