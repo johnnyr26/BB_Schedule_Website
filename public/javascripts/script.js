@@ -33,26 +33,24 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
         if (button.className !== 'squareOn' && button.className !== 'squareOff') {
             return;
         }
-        if (button.className === 'squareOn') {
-            button.className = 'squareOff';
-            button.backgroundColor = 'grey';
-            button.style.backgroundColor = 'grey';
-        } else {
-            button.className = 'squareOn';
-            button.backgroundColor = 'green';
-            button.style.backgroundColor = 'green';
-        }
+        button.className = button.className === 'squareOff' ? 'squareOn' : 'squareOff';
+        resetButtonColors();
         const courses = [];
         Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => courses.push(selectedCourseButton.textContent));
         fetch(`/?courses=${courses}`)
         .then(response => response.json())
         .then(response => {
             let { conflictedCourses, conflictString } = response;
+            Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => {
+                selectedCourseButton.backgroundColor = 'green';
+                selectedCourseButton.style.backgroundColor = 'green'
+            });
             conflictedCourses.forEach(conflictCourse => {
-                if (document.getElementById(conflictCourse.name).backgroundColor === 'green') {
-                    document.getElementById(conflictCourse.name).style.backgroundColor = 'red';
+                if (document.getElementById(conflictCourse).backgroundColor === 'green') {
+                    document.getElementById(conflictCourse).style.backgroundColor = 'red';
                 }
             });
+            
             document.getElementById('conflict-list').textContent = conflictString;
         });
     });
@@ -71,7 +69,7 @@ const resetButtonColors = (courseArray) => {
         });
         return;
     }
-    const courseButtons = Object.values(document.getElementsByTagName('button')).filter(button => button.className === 'squareOn' || button.className === 'squareOff');
+    const courseButtons = Object.values(document.querySelectorAll('button')).filter(button => button.className === 'squareOn' || button.className === 'squareOff');
     Object.values(courseButtons).forEach(button => {
         button.backgroundColor = 'grey';
         button.style.backgroundColor = 'grey';

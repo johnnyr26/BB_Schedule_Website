@@ -99,6 +99,7 @@ router.get('/', function(req, res, next) {
         } else {
             conflictString = '';
         }
+        conflictedCourses = conflictedCourses.map(course => course.name);
         return res.send({ conflictedCourses, conflictString });
     }
     res.render('index', { courses: setCourses });
