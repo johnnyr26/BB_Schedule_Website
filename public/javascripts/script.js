@@ -34,8 +34,11 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
             return;
         }
         button.className = button.className === 'squareOff' ? 'squareOn' : 'squareOff';
-        resetButtonColors();
         const courses = [];
+        Object.values(document.getElementsByClassName('squareOff')).forEach(unselectedButton => {
+            unselectedButton.style.backgroundColor = 'grey';
+            unselectedButton.backgroundColor = 'grey';
+        });
         Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => courses.push(selectedCourseButton.textContent));
         fetch(`/?courses=${courses}`)
         .then(response => response.json())
@@ -50,25 +53,12 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
                     document.getElementById(conflictCourse).style.backgroundColor = 'red';
                 }
             });
-            
             document.getElementById('conflict-list').textContent = conflictString;
         });
     });
 });
 
 const resetButtonColors = (courseArray) => {
-    if (courseArray) {
-        Object.values(document.getElementsByClassName('squareOn')).forEach(button => {
-            button.backgroundColor = 'green';
-            button.style.backgroundColor = 'green';
-            setCourses.forEach(originallySelectedCourse => {
-                if (originallySelectedCourse.name === button.textContent) {
-                    courseArray.push(originallySelectedCourse);
-                }
-            });
-        });
-        return;
-    }
     const courseButtons = Object.values(document.querySelectorAll('button')).filter(button => button.className === 'squareOn' || button.className === 'squareOff');
     Object.values(courseButtons).forEach(button => {
         button.backgroundColor = 'grey';
