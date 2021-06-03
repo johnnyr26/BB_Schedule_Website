@@ -38,26 +38,15 @@ document.getElementById('student-search').addEventListener('keyup', e => {
     resetStudentButtonBackground();
     document.getElementById('student-buttons').innerHTML = '';
     searchedStudents.forEach(studentName => {
-        const button = `
-            <button class="student-button" id="${studentName}">${studentName}</button>
-        `;
-        document.getElementById('student-buttons').innerHTML += button;
-    });
-    addButtonEventListener();
-});
-
-document.getElementById('reset').addEventListener('click', () => {
-    resetButtonColors();
-    resetClassNames();
-    document.getElementById('conflict-list').textContent = '';
-});
-
-const addButtonEventListener = () => {
-    Object.values(document.getElementsByTagName('button')).forEach(button => {
+        const button = document.createElement('button');
+        button.className = 'student-button';
+        button.id = studentName;
+        button.textContent = studentName;
         button.addEventListener('click', () => {
             if (button.className !== 'squareOn' && button.className !== 'squareOff' && button.className !== 'student-button') {
                 return;
             }
+            console.log(button.className);
             if (button.className === 'student-button') {
                 let wasGreen = false;
                 if (button.backgroundColor === 'green') {
@@ -73,10 +62,25 @@ const addButtonEventListener = () => {
                 .then(response => response.json())
                 .then(response => {
                     const { courses } = response;
-                    console.log(courses);
                     courses.forEach(course => {
-                        document.getElementById(course).style.border = 'solid yellow 3px';
-                    })
+                        document.getElementById(course).className = 'squareOn';
+                    });
+                    Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => courses.push(selectedCourseButton.textContent));
+                    fetch(`/?courses=${courses}`)
+                    .then(response => response.json())
+                    .then(response => {
+                        let { conflictedCourses, conflictString } = response;
+                        Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => {
+                            selectedCourseButton.backgroundColor = 'green';
+                            selectedCourseButton.style.backgroundColor = 'green'
+                        });
+                        conflictedCourses.forEach(conflictCourse => {
+                            if (document.getElementById(conflictCourse).backgroundColor === 'green') {
+                                document.getElementById(conflictCourse).style.backgroundColor = 'red';
+                            }
+                        });
+                        document.getElementById('conflict-list').textContent = conflictString;
+                    });
                 });
                 button.backgroundColor = 'green';
                 button.style.backgroundColor = 'green';
@@ -89,6 +93,87 @@ const addButtonEventListener = () => {
             }
             const courses = [];
             Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => courses.push(selectedCourseButton.textContent));
+            if (courses) {
+                fetch(`/?courses=${courses}`)
+                .then(response => response.json())
+                .then(response => {
+                    let { conflictedCourses, conflictString } = response;
+                    Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => {
+                        selectedCourseButton.backgroundColor = 'green';
+                        selectedCourseButton.style.backgroundColor = 'green'
+                    });
+                    conflictedCourses.forEach(conflictCourse => {
+                        if (document.getElementById(conflictCourse).backgroundColor === 'green') {
+                            document.getElementById(conflictCourse).style.backgroundColor = 'red';
+                        }
+                    });
+                    document.getElementById('conflict-list').textContent = conflictString;
+                });
+            }
+        });
+        document.getElementById('student-buttons').appendChild(button);
+    });
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+    resetButtonColors();
+    resetClassNames();
+    document.getElementById('conflict-list').textContent = '';
+});
+
+Object.values(document.getElementsByTagName('button')).forEach(button => {
+    button.addEventListener('click', () => {
+        if (button.className !== 'squareOn' && button.className !== 'squareOff' && button.className !== 'student-button') {
+            return;
+        }
+        console.log(button.className);
+        if (button.className === 'student-button') {
+            let wasGreen = false;
+            if (button.backgroundColor === 'green') {
+                wasGreen = true;
+            }
+            resetButtonColors();
+            resetClassNames();
+            if (wasGreen) {
+                return;
+            }
+            const studentName = button.textContent;
+            fetch(`/?student=${studentName}`)
+            .then(response => response.json())
+            .then(response => {
+                const { courses } = response;
+                courses.forEach(course => {
+                    document.getElementById(course).className = 'squareOn';
+                });
+                Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => courses.push(selectedCourseButton.textContent));
+                fetch(`/?courses=${courses}`)
+                .then(response => response.json())
+                .then(response => {
+                    let { conflictedCourses, conflictString } = response;
+                    Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => {
+                        selectedCourseButton.backgroundColor = 'green';
+                        selectedCourseButton.style.backgroundColor = 'green'
+                    });
+                    conflictedCourses.forEach(conflictCourse => {
+                        if (document.getElementById(conflictCourse).backgroundColor === 'green') {
+                            document.getElementById(conflictCourse).style.backgroundColor = 'red';
+                        }
+                    });
+                    document.getElementById('conflict-list').textContent = conflictString;
+                });
+            });
+            button.backgroundColor = 'green';
+            button.style.backgroundColor = 'green';
+            return;
+        }
+        button.className = button.className === 'squareOff' ? 'squareOn' : 'squareOff';
+        if (button.className === 'squareOff') {
+            button.style.backgroundColor = 'grey';
+            button.backgroundColor = 'grey';
+        }
+        const courses = [];
+        Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => courses.push(selectedCourseButton.textContent));
+        if (courses) {
             fetch(`/?courses=${courses}`)
             .then(response => response.json())
             .then(response => {
@@ -104,9 +189,9 @@ const addButtonEventListener = () => {
                 });
                 document.getElementById('conflict-list').textContent = conflictString;
             });
-        });
+        }
     });
-}
+});
 
 const resetButtonColors = () => {
     const courseButtons = Object.values(document.querySelectorAll('button')).filter(button => button.className === 'squareOn' || button.className === 'squareOff');
@@ -140,9 +225,6 @@ const resetClassNames = () => {
         button.className = 'squareOff';
     });
 }
-
-addButtonEventListener();
-
 window.onload = () => {
    Object.values(document.getElementsByClassName('student-button')).forEach(button => {
         students.push(button.textContent);
