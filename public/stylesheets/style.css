@@ -1,10 +1,45 @@
 body, html {
+  height: 100%;
   width: 100%;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+#main-body {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+#courses {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1200px;
+}
+#students {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid black;
+  width: 250px;
+  height: 800px;
+  margin-top: 10px;
+  overflow-y: scroll;
+}
+#student-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.student-button {
+  min-height: 100px;
+  min-width: 195px;
+  margin: 5px;
+  background-color: grey;
 }
 #grid {
   display: flex;
@@ -31,7 +66,7 @@ button {
   border: solid black 1px;
 }
 #reset {
-  height: 50px;
+  min-height: 50px;
   width: 100px;
   font-size: 24px;
   background-color: grey;
@@ -50,8 +85,11 @@ button {
   align-items: center;
   justify-content: center;
 }
-#search-bar {
-  width: 100%;
+#student-search {
+  width: 75%;
+}
+.search-bar {
+  width: 90%;
   margin: 10px;
   border-radius: 10px;
   height: 24px;

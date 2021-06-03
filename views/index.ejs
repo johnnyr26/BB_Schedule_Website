@@ -7,15 +7,27 @@
     <link href="/stylesheets/style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <div id="text-area">
-        <input type="text" id="search-bar" placeholder="Search Courses"/>
-    </div>
-    <button id="reset">Reset</button>
-    <p id="conflict-list"></p>
-    <div id ="grid">
-      <% courses.forEach(course => { %>
-        <button class="squareOff" id="<%= course.name %>"><%= course.name %></button>
-      <% }); %>
+    <div id="main-body">
+      <div id="students">
+        <input type="text" class="search-bar" placeholder="Search student" id="student-search">
+        <div id="student-buttons">
+          <% students.forEach(student => { %>
+            <button class="student-button" id="<%= student %>"><%= student %></button>
+          <% }); %>
+        </div>
+      </div>
+      <div id="courses">
+        <div id="text-area">
+            <input type="text" class="search-bar" id="course-search" placeholder="Search Courses"/>
+        </div>
+        <button id="reset">Reset</button>
+        <p id="conflict-list"></p>
+        <div id ="grid">
+          <% courses.forEach(course => { %>
+            <button class="squareOff" id="<%= course.name %>"><%= course.name %></button>
+          <% }); %>
+        </div>
+      </div>
     </div>
     <script src="/javascripts/script.js"></script>
   </body>
