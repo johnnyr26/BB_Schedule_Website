@@ -22,11 +22,9 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 10px;
   border: 1px solid black;
   width: 250px;
-  height: 800px;
-  margin-top: 10px;
+  height: 1500px;
   overflow-y: scroll;
 }
 #student-buttons {
@@ -87,7 +85,9 @@ button {
   justify-content: center;
 }
 #student-search {
-  width: 75%;
+  width: 195px;
+  position: sticky;
+  top: 10px;
 }
 .search-bar {
   width: 90%;

@@ -36,6 +36,7 @@ document.getElementById('student-search').addEventListener('keyup', e => {
     });
     resetButtonColors();
     resetStudentButtonBackground();
+    document.getElementById('conflict-list').textContent = '';
     document.getElementById('student-buttons').innerHTML = '';
     searchedStudents.forEach(studentName => {
         const button = document.createElement('button');
@@ -46,7 +47,6 @@ document.getElementById('student-search').addEventListener('keyup', e => {
             if (button.className !== 'squareOn' && button.className !== 'squareOff' && button.className !== 'student-button') {
                 return;
             }
-            console.log(button.className);
             if (button.className === 'student-button') {
                 let wasGreen = false;
                 if (button.backgroundColor === 'green') {
