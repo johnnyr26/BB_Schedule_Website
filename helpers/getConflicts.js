@@ -424,9 +424,8 @@ module.exports = setCourses => {
                                                     counter++;
                                                 if (stuConflicts[i].includes(setCourses[j]))
                                                     counter++;
-                                                if (stuConflicts[i].includes(setCourses[j]))
+                                                if (stuConflicts[i].includes(setCourses[k]))
                                                     counter++;
-
                                                 if (counter === stuConflicts[i].length)
                                                     skip = true;
                                             }

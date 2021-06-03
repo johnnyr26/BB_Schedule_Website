@@ -9,6 +9,7 @@ body, html {
 }
 #main-body {
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: row;
 }
@@ -16,15 +17,15 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 1200px;
+  width: 100%;
 }
 #students {
   display: flex;
   flex-direction: column;
   align-items: center;
   border: 1px solid black;
-  width: 250px;
-  height: 1500px;
+  min-width: 250px;
+  height: 100%;
   overflow-y: scroll;
 }
 #student-buttons {

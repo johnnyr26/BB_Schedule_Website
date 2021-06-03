@@ -189,7 +189,7 @@ router.get('/', function(req, res, next) {
         });
         students.forEach(student => {
             setCourses.forEach(course => {
-                if (course.roster.includes(student.name)) {
+                if (course.roster.includes(student.name) && !student.courses.includes(course)) {
                     student.courses.push(course);
                 }
             });
