@@ -121,7 +121,11 @@ router.get('/', function(req, res, next) {
             let passedStudent = false;
             let students = [];
             let student = '';
+            let over = false;
             [...course].forEach(letter => {
+                if (over) {
+                    return;
+                }
                 if (letter === '.') {
                     courseNameEntered = true;
                     setCourseConstant = setCourses.find(setCourse => setCourse.name === courseName);
@@ -142,6 +146,11 @@ router.get('/', function(req, res, next) {
                     passedAdd = true;
                     return;
                 }
+                if (letter === ')') {
+                    students.push(student.trim());
+                    over = true;
+                    return;
+                }
                 if (!passedStudent && letter !== ',') {
                     student += letter;
                     return;
@@ -152,7 +161,7 @@ router.get('/', function(req, res, next) {
                     passedStudent = true;
                     return;
                 }
-                if (passedStudent) {
+                if (letter === ' ' && passedStudent) {
                     passedStudent = false;
                     return;
                 }
