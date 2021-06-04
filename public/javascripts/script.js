@@ -165,7 +165,7 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
             button.backgroundColor = 'green';
             button.style.backgroundColor = 'green';
             return;
-        }
+        } 
         button.className = button.className === 'squareOff' ? 'squareOn' : 'squareOff';
         if (button.className === 'squareOff') {
             button.style.backgroundColor = 'grey';
