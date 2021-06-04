@@ -171,6 +171,9 @@ x.add(Learning_Center_10_921023, 16);
 x.add(AP_Psychology_309120,3,4); 
 x.add(AP_Psychology_309120,13,14);
 
+x.add(AP_Psychology_409120,3,4); 
+x.add(AP_Psychology_409120,13,14);
+
 x.add(AP_Biology_w_lab_P309020,7,8,9);
 x.add(AP_Biology_w_lab_P309020,10,11,12);
 
@@ -188,6 +191,11 @@ x.add(SUPA_Economics_of_Personal_Finance_407010,3,4);
 x.add(SUPA_Economics_of_Personal_Finance_407010,5,6);
 x.add(SUPA_Economics_of_Personal_Finance_407010,11,12);
 x.add(SUPA_Economics_of_Personal_Finance_407010,15,16);
+
+x.add(SUPA_Economics_of_Personal_Finance_207010,3,4);
+x.add(SUPA_Economics_of_Personal_Finance_207010,5,6);
+x.add(SUPA_Economics_of_Personal_Finance_207010,11,12);
+x.add(SUPA_Economics_of_Personal_Finance_207010,15,16);
 
 
 x.add(Honors_Algebra_IITrigonometry_208090,5,6);
