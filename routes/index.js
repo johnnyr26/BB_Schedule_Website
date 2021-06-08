@@ -95,6 +95,9 @@ router.get('/', function(req, res, next) {
     setCourses.sort((a, b) => a.name > b.name ? 1 : -1);
     if (req.query.courses) {
         const queryCourses = req.query.courses.split(',');
+        if (queryCourses.length > 12) {
+            return;
+        }
         const courses = setCourses.filter(course => queryCourses.includes(course.name));
         let conflictString = 'Conflicts: ';
         let conflictedCourses = getConflicts(courses);
