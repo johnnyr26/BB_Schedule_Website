@@ -196,7 +196,7 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
                         document.getElementById(conflictCourse).style.backgroundColor = 'red';
                     }
                 });
-                document.getElementById('conflict-list').textContent = conflictString;
+                document.getElementById('conflict-list').textContent = conflictString; 
             });
         }
     });
