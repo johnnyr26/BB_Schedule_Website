@@ -1,5 +1,5 @@
 const students = [];
-
+// zach schutzer is a great messenger
 document.getElementById('course-search').addEventListener('keyup', e => {
     const searchResult = document.getElementById('course-search').value;
     const allCourses = [];
@@ -67,7 +67,8 @@ document.getElementById('student-search').addEventListener('keyup', e => {
                         document.getElementById(course).className = 'squareOn';
                     });
                     Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => courses.push(selectedCourseButton.textContent));
-                    fetch(`/?courses=${courses}`)
+                    const setCourses = [...new Set(courses)];
+                    fetch(`/?courses=${setCourses}`)
                     .then(response => response.json())
                     .then(response => {
                         let { conflictedCourses, conflictString } = response;
@@ -95,7 +96,8 @@ document.getElementById('student-search').addEventListener('keyup', e => {
             const courses = [];
             Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => courses.push(selectedCourseButton.textContent));
             if (courses) {
-                fetch(`/?courses=${courses}`)
+                const setCourses = [...new Set(courses)];
+                fetch(`/?courses=${setCourses}`)
                 .then(response => response.json())
                 .then(response => {
                     let { conflictedCourses, conflictString } = response;
@@ -146,7 +148,8 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
                     document.getElementById(course).className = 'squareOn';
                 });
                 Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => courses.push(selectedCourseButton.textContent));
-                fetch(`/?courses=${courses}`)
+                const setCourses = [...new Set(courses)]; 
+                fetch(`/?courses=${setCourses}`)
                 .then(response => response.json())
                 .then(response => {
                     let { conflictedCourses, conflictString } = response;
@@ -174,7 +177,13 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
         const courses = [];
         Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => courses.push(selectedCourseButton.textContent));
         if (courses) {
-            fetch(`/?courses=${courses}`)
+            const setCourses = [...new Set(courses)];
+            if (setCourses.length > 12) {
+                button.className = 'squareOff';
+                document.getElementById('conflict-list').textContent = 'You cannot select more than twelve courses';
+                return;
+            }
+            fetch(`/?courses=${setCourses}`)
             .then(response => response.json())
             .then(response => {
                 let { conflictedCourses, conflictString } = response;
