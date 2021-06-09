@@ -63,8 +63,6 @@ x.add(Advanced_Photo_Portfolio_611133,16);
 x.add(AP_2D_Design_619110, 15,16);
 x.add(Advanced_Photo_Portfolio_611130, 15,16);
 
-x.add(AP_2D_Design_619110, 9,10);
-
 
 x.add(AP_Drawing_Portfolio_619060,1,2);
 
