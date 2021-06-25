@@ -1,6 +1,7 @@
 var express = require('express');
 const fs = require('fs');
-const { set } = require('../app');
+const readline = require('readline');
+const {google} = require('googleapis');
 const getConflicts = require('../helpers/getConflicts');
 var router = express.Router();
 
@@ -19,191 +20,258 @@ class Student {
     }
 }
 
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
+// The file token.json stores the user's access and refresh tokens, and is
+// created automatically when the authorization flow completes for the first
+// time.
+const TOKEN_PATH = 'token.json';
+
+// Load client secrets from a local file.
+
+function authorize(credentials, callback) {
+    const {client_secret, client_id, redirect_uris} = credentials.web;
+    const oAuth2Client = new google.auth.OAuth2(
+        client_id, client_secret, redirect_uris[0]);
+  
+    // Check if we have previously stored a token.
+    fs.readFile(TOKEN_PATH, (err, token) => {
+      if (err) return getNewToken(oAuth2Client, callback);
+      oAuth2Client.setCredentials(JSON.parse(token));
+      callback(oAuth2Client);
+    });
+}
+
+function getNewToken(oAuth2Client, callback) {
+    const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES,
+    });
+    console.log('Authorize this app by visiting this url:', authUrl);
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question('Enter the code from that page here: ', (code) => {
+      rl.close();
+      oAuth2Client.getToken(code, (err, token) => {
+        if (err) return console.error('Error while trying to retrieve access token', err);
+        oAuth2Client.setCredentials(token);
+        // Store the token to disk for later program executions
+        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+          if (err) return console.error(err);
+          console.log('Token stored to', TOKEN_PATH);
+        });
+        callback(oAuth2Client);
+      });
+    });
+  }
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   let setCourses = [];
-  fs.readFile('schedule.txt', 'utf8', (err, result) => {
-    const schedules = result.split('\n').filter(course => course.length > 0);
-    let classNames = [];
-    let totalPeriods = [];
-    schedules.forEach(schedule => {
-      let pastParenthesis1 = false;
-      let pastClassName = false;
-      let className = '';
-      const periods = [];
-      for (let i = 0; i < schedule.length; i ++) {
-          let letter = schedule[i];
-          if (letter === ';' || letter === ')') {
-              break;
-          }
-          if (letter === '(') {
-              pastParenthesis1 = true;
-              continue;
-          }
-          if (!pastParenthesis1) {
-              continue;
-          }
-          if (!pastClassName) {
-              if (letter === ',') {
-                  classNames.push(className);
-                  className = '';
-                  pastClassName = true;
-                  continue;
-              }
-              if (letter === '_') {
-                  className += ' ';
-                  continue;
-              }
-              className += letter;
-              continue;
-          } 
-          if (letter === ' ') {
-              continue;
-          }
-          let period = '';
-          while (letter !== ',' && letter !== ')' && letter !== ';') {
-              period += letter;
-              letter = schedule[++i];
-          }
-          periods.push(period);
-      }
-      totalPeriods.push(periods);  
-    });
-    totalPeriods = totalPeriods.filter(period => period.length > 0);
-    if (classNames.length !== totalPeriods.length) {
-        document.getElementById('conflict-list').textContent = 'There was an error processing the data.';
-        console.log('There was an error processing the data.');
-        return;
-    }
-    let coursesArray= [];
-    classNames = classNames.filter(course => course.length > 0);
-    classNames.forEach((course, index) => {
-        const periods = totalPeriods[index];
-        const classCourse = new Course(course, periods);
-        coursesArray.push(classCourse);
-    });
-    const uniqueCourses = new Set(classNames);
-    uniqueCourses.forEach(className => {
-        const coursesWithName = coursesArray.filter(course => course.name === className);
-        let periods = coursesWithName.map(course => course.periods);
-        periods = periods.map(JSON.stringify).reverse().filter((e, i, a) => {
-          return a.indexOf(e, i + 1) === -1;
-        }).reverse().map(JSON.parse);
-        const newCourse = new Course(className, periods);
-        setCourses.push(newCourse);
-    });
-    setCourses.sort((a, b) => a.name > b.name ? 1 : -1);
-    if (req.query.courses) {
-        const queryCourses = req.query.courses.split(',');
-        if (queryCourses.length > 12) {
-            return;
-        }
-        const courses = setCourses.filter(course => queryCourses.includes(course.name));
-        let conflictString = 'Conflicts: ';
-        let conflictedCourses = getConflicts(courses);
-        const flattenedArray = [].concat.apply([], conflictedCourses);
-        conflictedCourses = [...new Set(flattenedArray)];
-        conflictedCourses.forEach(conflictCourse => {
-            conflictString += conflictCourse.name + ', ';
-        });
-        if (conflictString !== 'Conflicts: ') {
-            conflictString = conflictString.slice(0, -2);
-        } else {
-            conflictString = '';
-        }
-        conflictedCourses = conflictedCourses.map(course => course.name);
-        return res.send({ conflictedCourses, conflictString });
-    }
-    fs.readFile('roster.txt', 'utf-8', (err, response) => {
-        const courses = response.split('\n').filter(course => course.length > 0);
-        courses.forEach(course => {
-            let courseName = '';
-            let setCourseConstant;
-            let courseNameEntered = false;
-            let passedAdd = false;
-            let passedStudent = false;
-            let students = [];
-            let student = '';
-            let over = false;
-            [...course].forEach(letter => {
-                if (over) {
-                    return;
-                }
-                if (letter === '.') {
-                    courseNameEntered = true;
-                    setCourseConstant = setCourses.find(setCourse => setCourse.name === courseName);
-                    return;
-                }
-                if (!courseNameEntered) {
-                    if (letter === '_') {
-                        courseName += ' ';
-                        return;
-                    }
-                    courseName += letter;
-                    return;
-                }
-                if (!passedAdd && letter !== '(') {
-                    return;
-                }
-                if (letter === '(') {
-                    passedAdd = true;
-                    return;
-                }
-                if (letter === ')') {
-                    students.push(student.trim());
-                    over = true;
-                    return;
-                }
-                if (!passedStudent && letter !== ',') {
-                    student += letter;
-                    return;
-                }
-                if (letter === ',' || letter === ')' || (letter === ' ' && !passedStudent)) {
-                    students.push(student.trim());
-                    student = '';
-                    passedStudent = true;
-                    return;
-                }
-                if (letter === ' ' && passedStudent) {
-                    passedStudent = false;
-                    return;
-                }
-            });
-            if (setCourseConstant) {
-                setCourseConstant.roster = students;
+  fs.readFile('credentials.json', (err, content) => {
+    if (err) return console.log('Error loading client secret file:', err);
+    // Authorize a client with credentials, then call the Google Sheets API.
+    authorize(JSON.parse(content), auth => {
+          const sheets = google.sheets({ version: 'v4', auth });
+          sheets.spreadsheets.values.get({
+              spreadsheetId: '1OPZ4zyYWC-ckwUjbvJrZNHuw-ouWrS4AKWb4pgxfOGY',
+              range: 'A1:100000',
+          }, (error, response) => {
+            if (error || !response.data.values) {
+                  return console.log('The API returned an error: ' + err);
             }
-        });
-        const students = new Set();
-        const studentsName = new Set();
-        setCourses.forEach(course => {
-            course.roster.forEach(student => {
-                studentsName.add(student);
-                let alreadyIncluded = false;
-                students.forEach(includedStudent => {
-                    if (includedStudent.name === student) {
-                        alreadyIncluded = true;
-                        return;
+            const schedules = response.data.values.flat();
+            let classNames = [];
+            let totalPeriods = [];
+            schedules.forEach(schedule => {
+                let pastParenthesis1 = false;
+                let pastClassName = false;
+                let className = '';
+                const periods = [];
+                for (let i = 0; i < schedule.length; i++) {
+                    let letter = schedule[i];
+                    if (letter === ';' || letter === ')') {
+                        break;
+                    }
+                    if (letter === '(') {
+                        pastParenthesis1 = true;
+                        continue;
+                    }
+                    if (!pastParenthesis1) {
+                        continue;
+                    }
+                    if (!pastClassName) {
+                        if (letter === ',') {
+                            classNames.push(className);
+                            className = '';
+                            pastClassName = true;
+                            continue;
+                        }
+                        if (letter === '_') {
+                            className += ' ';
+                            continue;
+                        }
+                        className += letter;
+                        continue;
+                    }
+                    if (letter === ' ') {
+                        continue;
+                    }
+                    let period = '';
+                    while (letter !== ',' && letter !== ')' && letter !== ';') {
+                        period += letter;
+                        letter = schedule[++i];
+                    }
+                    periods.push(period);
+                }
+                totalPeriods.push(periods);
+            });
+            totalPeriods = totalPeriods.filter(period => period.length > 0);
+            if (classNames.length !== totalPeriods.length) {
+                document.getElementById('conflict-list').textContent = 'There was an error processing the data.';
+                console.log('There was an error processing the data.');
+                return;
+            }
+            let coursesArray = [];
+            classNames = classNames.filter(course => course.length > 0);
+            classNames.forEach((course, index) => {
+                const periods = totalPeriods[index];
+                const classCourse = new Course(course, periods);
+                coursesArray.push(classCourse);
+            });
+            const uniqueCourses = new Set(classNames);
+            uniqueCourses.forEach(className => {
+                const coursesWithName = coursesArray.filter(course => course.name === className);
+                let periods = coursesWithName.map(course => course.periods);
+                periods = periods.map(JSON.stringify).reverse().filter((e, i, a) => {
+                    return a.indexOf(e, i + 1) === -1;
+                }).reverse().map(JSON.parse);
+                const newCourse = new Course(className, periods);
+                setCourses.push(newCourse);
+            });
+            setCourses.sort((a, b) => a.name > b.name ? 1 : -1);
+            if (req.query.courses) {
+                const queryCourses = req.query.courses.split(',');
+                if (queryCourses.length > 12) {
+                    return;
+                }
+                const courses = setCourses.filter(course => queryCourses.includes(course.name));
+                let conflictString = 'Conflicts: ';
+                let conflictedCourses = getConflicts(courses);
+                const flattenedArray = [].concat.apply([], conflictedCourses);
+                conflictedCourses = [...new Set(flattenedArray)];
+                conflictedCourses.forEach(conflictCourse => {
+                    conflictString += conflictCourse.name + ', ';
+                });
+                if (conflictString !== 'Conflicts: ') {
+                    conflictString = conflictString.slice(0, -2);
+                } else {
+                    conflictString = '';
+                }
+                conflictedCourses = conflictedCourses.map(course => course.name);
+                return res.send({ conflictedCourses, conflictString });
+            }
+            sheets.spreadsheets.values.get({
+                spreadsheetId: '1G6oSdDGh5t9DVsQKFB5_loCMZUmORsHYHnvEmWK6J1s',
+                range: 'A1:100000',
+            }, (rosterError, rosterResponse) => {
+                if (rosterError || !rosterResponse.data.values) {
+                    console.log('Error getting course roster');
+                }
+                const courses = rosterResponse.data.values.flat();
+                courses.forEach(course => {
+                    let courseName = '';
+                    let setCourseConstant;
+                    let courseNameEntered = false;
+                    let passedAdd = false;
+                    let passedStudent = false;
+                    let students = [];
+                    let student = '';
+                    let over = false;
+                    [...course].forEach(letter => {
+                        if (over) {
+                            return;
+                        }
+                        if (letter === '.') {
+                            courseNameEntered = true;
+                            setCourseConstant = setCourses.find(setCourse => setCourse.name === courseName);
+                            return;
+                        }
+                        if (!courseNameEntered) {
+                            if (letter === '_') {
+                                courseName += ' ';
+                                return;
+                            }
+                            courseName += letter;
+                            return;
+                        }
+                        if (!passedAdd && letter !== '(') {
+                            return;
+                        }
+                        if (letter === '(') {
+                            passedAdd = true;
+                            return;
+                        }
+                        if (letter === ')') {
+                            students.push(student.trim());
+                            over = true;
+                            return;
+                        }
+                        if (!passedStudent && letter !== ',') {
+                            student += letter;
+                            return;
+                        }
+                        if (letter === ',' || letter === ')' || (letter === ' ' && !passedStudent)) {
+                            students.push(student.trim());
+                            student = '';
+                            passedStudent = true;
+                            return;
+                        }
+                        if (letter === ' ' && passedStudent) {
+                            passedStudent = false;
+                            return;
+                        }
+                    });
+                    if (setCourseConstant) {
+                        setCourseConstant.roster = students;
                     }
                 });
-                if (!alreadyIncluded) {
-                    students.add(new Student(student));
+                const students = new Set();
+                const studentsName = new Set();
+                setCourses.forEach(course => {
+                    course.roster.forEach(student => {
+                        studentsName.add(student);
+                        let alreadyIncluded = false;
+                        students.forEach(includedStudent => {
+                            if (includedStudent.name === student) {
+                                alreadyIncluded = true;
+                                return;
+                            }
+                        });
+                        if (!alreadyIncluded) {
+                            students.add(new Student(student));
+                        }
+                    });
+                });
+                students.forEach(student => {
+                    setCourses.forEach(course => {
+                        if (course.roster.includes(student.name) && !student.courses.includes(course)) {
+                            student.courses.push(course);
+                        }
+                    });
+                });
+                if (req.query.student) {
+                    const searchedStudent = [...students].find(student => student.name === req.query.student);
+                    const courseNames = searchedStudent.courses.map(course => course.name);
+                    return res.send({ courses: courseNames });
                 }
+                res.render('index', { courses: setCourses, students: studentsName });
             });
-        });
-        students.forEach(student => {
-            setCourses.forEach(course => {
-                if (course.roster.includes(student.name) && !student.courses.includes(course)) {
-                    student.courses.push(course);
-                }
-            });
-        });
-        if (req.query.student) {
-            const searchedStudent = [...students].find(student => student.name === req.query.student);
-            const courseNames = searchedStudent.courses.map(course => course.name);
-            return res.send({ courses: courseNames });
-        }
-        res.render('index', { courses: setCourses, students: studentsName });
-    });
+          });
+      });
+    
   });
 });
 
