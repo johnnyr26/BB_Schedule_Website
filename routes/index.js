@@ -1,5 +1,6 @@
 var express = require('express');
 const {google} = require('googleapis');
+const { BandwidthLimitExceeded } = require('http-errors');
 const getConflicts = require('../helpers/getConflicts');
 var router = express.Router();
 
@@ -21,7 +22,7 @@ class Student {
 /* GET home page. */
 router.get('/', function(req, res, next) {
     let setCourses = [];
-    const sheets = google.sheets({ version: 'v4' });
+    const sheets = google.sheets('v4');
     sheets.spreadsheets.values.get({
         spreadsheetId: '1Y2M_NX8f8nmf8Bj-W3bo8aat7ZMvC2cHTmOHV5H3yOg',
         range: 'A1:100000',
@@ -31,7 +32,6 @@ router.get('/', function(req, res, next) {
             return console.log('The API returned an error: ' + err);
         }
         const schedules = response.data.values.flat();
-        console.log(schedules);
         let classNames = [];
         let totalPeriods = [];
         schedules.forEach(schedule => {
@@ -216,7 +216,12 @@ router.get('/', function(req, res, next) {
                 const courseNames = searchedStudent.courses.map(course => course.name);
                 return res.send({ courses: courseNames });
             }
-            res.render('index', { courses: setCourses, students: studentsName });
+            const sortedStudents = [...studentsName].sort((a, b) => {
+                const aId = parseInt(a.substring(3));
+                const bId = parseInt(b.substring(3));
+                return aId - bId;
+            });
+            res.render('index', { courses: setCourses, students: sortedStudents });
         });
     });
 });
