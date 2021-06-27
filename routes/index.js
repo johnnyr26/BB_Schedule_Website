@@ -217,9 +217,9 @@ router.get('/', function(req, res, next) {
                 return res.send({ courses: courseNames });
             }
             const sortedStudents = [...studentsName].sort((a, b) => {
-                const aId = parseInt(a.substring(3));
-                const bId = parseInt(b.substring(3));
-                return aId - bId;
+                const firstStudentId = parseInt(a.substring(3));
+                const secondStudentId = parseInt(b.substring(3));
+                return firstStudentId - secondStudentId;
             });
             res.render('index', { courses: setCourses, students: sortedStudents });
         });

@@ -1,5 +1,6 @@
 const students = [];
 // zach schutzer is a great messenger
+// whoever has to read this autrocity...just two words...my apologies
 document.getElementById('course-search').addEventListener('keyup', e => {
     const searchResult = document.getElementById('course-search').value;
     const allCourses = [];
@@ -49,6 +50,7 @@ document.getElementById('student-search').addEventListener('keyup', e => {
             }
             if (button.className === 'student-button') {
                 let wasGreen = false;
+                // some nasty code but absolutely necessary for now because after button color resets, we have to know whether the button was previously green
                 if (button.backgroundColor === 'green') {
                     wasGreen = true;
                 }
@@ -180,6 +182,7 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
             const setCourses = [...new Set(courses)];
             if (setCourses.length > 12) {
                 button.className = 'squareOff';
+                // prevents website from getting shut down from network timeout from overloaded calculations of too many selected courses
                 document.getElementById('conflict-list').textContent = 'You cannot select more than twelve courses';
                 return;
             }
