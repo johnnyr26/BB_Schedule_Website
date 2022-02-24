@@ -1,27 +1,27 @@
 const students = [];
 // zach schutzer is a great messenger
-// whoever has to read this autrocity...just two words...my apologies
+// whoever has to read this atrocity...just two words...my apologies
 document.getElementById('course-search').addEventListener('keyup', e => {
     const searchResult = document.getElementById('course-search').value;
-    const allCourses = [];
-    Object.values(document.querySelectorAll('button')).forEach(courseButton => {
-        if (courseButton.textContent === 'Reset') {
-            return;
-        }
-        if (courseButton.className === 'squareOn' || courseButton.className === 'squareOff') {
-            allCourses.push(courseButton.textContent);
-        }
+
+    const courseButtons = Object.values(document.querySelectorAll('button')).filter(courseButton => {
+        return courseButton.className === 'squareOn' || courseButton.className === 'squareOff';
     });
+    const allCourses = courseButtons.map(course => course.textContent);
+
     let searchedCourses = allCourses.filter(course => {
-        const shortenedCourseName = course.substr(0, searchResult.length).toLowerCase();
+        const shortenedCourseName = course.substring(0, searchResult.length).toLowerCase();
         const lowerCasedSearchResult = searchResult.toLowerCase();
         return shortenedCourseName === lowerCasedSearchResult;
     });
+
     resetBorderColors();
+
     const searchFieldIsEmpty = searchedCourses.length === allCourses.length;
     if (searchFieldIsEmpty) {
         return;
     }
+
     searchedCourses.forEach(courseName => {
         document.getElementById(courseName).style.border = 'solid yellow 3px';
     });
@@ -30,16 +30,21 @@ document.getElementById('course-search').addEventListener('keyup', e => {
 document.getElementById('student-search').addEventListener('keyup', e => {
     const searchResult = document.getElementById('student-search').value;
     const allStudents = [...students];
+
     let searchedStudents = allStudents.filter(student => {
         const shortenedCourseName = student.substr(0, searchResult.length).toLowerCase();
         const lowerCasedSearchResult = searchResult.toLowerCase();
         return shortenedCourseName === lowerCasedSearchResult;
     });
+
     resetButtonColors();
     resetStudentButtonBackground();
+
     document.getElementById('conflict-list').textContent = '';
     document.getElementById('student-buttons').innerHTML = '';
+
     searchedStudents.forEach(studentName => {
+
         const button = document.createElement('button');
         button.className = 'student-button';
         button.id = studentName;
@@ -49,13 +54,11 @@ document.getElementById('student-search').addEventListener('keyup', e => {
                 return;
             }
             if (button.className === 'student-button') {
-                let wasGreen = false;
+                let wasGreen = button.backgroundColor === 'green' ? true : false;
                 // some nasty code but absolutely necessary for now because after button color resets, we have to know whether the button was previously green
-                if (button.backgroundColor === 'green') {
-                    wasGreen = true;
-                }
                 resetButtonColors();
                 resetClassNames();
+                
                 document.getElementById('conflict-list').textContent = '';
                 if (wasGreen) {
                     return;
@@ -73,16 +76,22 @@ document.getElementById('student-search').addEventListener('keyup', e => {
                     fetch(`/?courses=${setCourses}`)
                     .then(response => response.json())
                     .then(response => {
-                        let { conflictedCourses, conflictString } = response;
+                        let { conflictedCourses } = response;
                         Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => {
                             selectedCourseButton.backgroundColor = 'green';
                             selectedCourseButton.style.backgroundColor = 'green'
                         });
+                        if (!conflictedCourses) {
+                            return;
+                        }
+                        let conflictString = '';
                         conflictedCourses.forEach(conflictCourse => {
-                            if (document.getElementById(conflictCourse).backgroundColor === 'green') {
-                                document.getElementById(conflictCourse).style.backgroundColor = 'red';
+                            if (document.getElementById(conflictCourse.name).backgroundColor === 'green') {
+                                document.getElementById(conflictCourse.name).style.backgroundColor = 'red';
                             }
+                            conflictString += `${conflictCourse.name}, `;
                         });
+                        conflictString = conflictString.slice(0, -2);
                         document.getElementById('conflict-list').textContent = conflictString;
                     });
                 });
@@ -102,16 +111,22 @@ document.getElementById('student-search').addEventListener('keyup', e => {
                 fetch(`/?courses=${setCourses}`)
                 .then(response => response.json())
                 .then(response => {
-                    let { conflictedCourses, conflictString } = response;
+                    let { conflictedCourses } = response;
                     Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => {
                         selectedCourseButton.backgroundColor = 'green';
                         selectedCourseButton.style.backgroundColor = 'green'
                     });
+                    if (!conflictedCourses) {
+                        return;
+                    }
+                    let conflictString = '';
                     conflictedCourses.forEach(conflictCourse => {
-                        if (document.getElementById(conflictCourse).backgroundColor === 'green') {
-                            document.getElementById(conflictCourse).style.backgroundColor = 'red';
+                        if (document.getElementById(conflictCourse.name).backgroundColor === 'green') {
+                            document.getElementById(conflictCourse.name).style.backgroundColor = 'red';
                         }
+                        conflictString += `${conflictCourse.name}, `;
                     });
+                    conflictString = conflictString.slice(0, -2);
                     document.getElementById('conflict-list').textContent = conflictString;
                 });
             }
@@ -154,16 +169,22 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
                 fetch(`/?courses=${setCourses}`)
                 .then(response => response.json())
                 .then(response => {
-                    let { conflictedCourses, conflictString } = response;
+                    let { conflictedCourses } = response;
                     Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => {
                         selectedCourseButton.backgroundColor = 'green';
                         selectedCourseButton.style.backgroundColor = 'green'
                     });
+                    if (!conflictedCourses) {
+                        return;
+                    }
+                    let conflictString = '';
                     conflictedCourses.forEach(conflictCourse => {
-                        if (document.getElementById(conflictCourse).backgroundColor === 'green') {
-                            document.getElementById(conflictCourse).style.backgroundColor = 'red';
+                        if (document.getElementById(conflictCourse.name).backgroundColor === 'green') {
+                            document.getElementById(conflictCourse.name).style.backgroundColor = 'red';
                         }
+                        conflictString += `${conflictCourse.name}, `;
                     });
+                    conflictString = conflictString.slice(0, -2);
                     document.getElementById('conflict-list').textContent = conflictString;
                 });
             });
@@ -189,17 +210,23 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
             fetch(`/?courses=${setCourses}`)
             .then(response => response.json())
             .then(response => {
-                let { conflictedCourses, conflictString } = response;
+                let { conflictedCourses } = response;
                 Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => {
                     selectedCourseButton.backgroundColor = 'green';
                     selectedCourseButton.style.backgroundColor = 'green'
                 });
+                if (!conflictedCourses) {
+                    return;
+                }
+                let conflictString = '';
                 conflictedCourses.forEach(conflictCourse => {
-                    if (document.getElementById(conflictCourse).backgroundColor === 'green') {
-                        document.getElementById(conflictCourse).style.backgroundColor = 'red';
+                    if (document.getElementById(conflictCourse.name).backgroundColor === 'green') {
+                        document.getElementById(conflictCourse.name).style.backgroundColor = 'red';
                     }
+                    conflictString += `${conflictCourse.name}, `;
                 });
-                document.getElementById('conflict-list').textContent = conflictString; 
+                conflictString = conflictString.slice(0, -2);
+                document.getElementById('conflict-list').textContent = conflictString;
             });
         }
     });

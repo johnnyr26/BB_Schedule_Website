@@ -1,14 +1,13 @@
 const permutation = require('./permutations');
+const hasConflicts = require('./isConflict')
 
 module.exports = periods => {
     const combinations = permutation(periods, [[]]);
     for (let combo of combinations) {
-        const flattenedArray = combo.flat(Infinity);
-        const setArray = [...new Set(flattenedArray)];
-        const noConflicts = setArray.length === flattenedArray.length;
-        if (noConflicts) {
+        if (!hasConflicts(combo)) {
             return false;
         }
     }
     return true;
 }
+
