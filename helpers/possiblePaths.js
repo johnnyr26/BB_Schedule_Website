@@ -12,13 +12,14 @@ module.exports = courses => {
         return perm.map(section => {
             return {
                 name: courses.find(course => course.periods.some(period => section === period)).name,
-                section
+                section,
+                periods: convertSectionsToPeriods(section)
             };
         });
     });
 
-    noConflictPaths.forEach((path, index) => {
-        noConflictPaths[index] = path.sort((a, b) => {
+    noConflictPaths.map(path => {
+        return path.sort((a, b) => {
             const aSection = a.section.map(period => parseInt(period));
             const bSection = b.section.map(period => parseInt(period));
             
@@ -30,4 +31,10 @@ module.exports = courses => {
     });
 
     return noConflictPaths;
+}
+
+const convertSectionsToPeriods = section => {
+    return section.map(period => {
+        return parseInt(period) % 2 === 1 ? `${Math.round(parseInt(period) / 2)}A` : `${Math.round(parseInt(period) / 2)}B`;
+    });
 }

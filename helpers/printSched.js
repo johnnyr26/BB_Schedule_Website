@@ -15,7 +15,6 @@ module.exports = searchedCourses => {
                 if (section.includes(`${i}`)) {
                     charIndex = index;
                 }  
-
                 return section.includes(`${i}`);
             });
 
@@ -29,7 +28,6 @@ module.exports = searchedCourses => {
                 courseString += '\t';
             }
         }
-        console.log(courseString);
     });
 }
 

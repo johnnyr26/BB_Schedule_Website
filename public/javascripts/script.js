@@ -1,6 +1,19 @@
 const students = [];
 // zach schutzer is a great messenger
 // whoever has to read this atrocity...just two words...my apologies
+
+const updatePathsLink = () => {
+    if (document.querySelectorAll('.squareOn').length === 0) {
+        document.querySelector('#paths').style.display = 'none';
+    } else {
+        document.querySelector('#paths').style.display = 'flex';
+    }
+    let queryString = '';
+    queryString = [...document.querySelectorAll('.squareOn')].map(button => button.id).join();
+    document.querySelector('#paths').href = `/paths?courses=${queryString}`;
+}
+
+
 document.getElementById('course-search').addEventListener('keyup', e => {
     const searchResult = document.getElementById('course-search').value;
 
@@ -138,6 +151,7 @@ document.getElementById('student-search').addEventListener('keyup', e => {
 document.getElementById('reset').addEventListener('click', () => {
     resetButtonColors();
     resetClassNames();
+    updatePathsLink();
     document.getElementById('conflict-list').textContent = '';
 });
 
@@ -186,6 +200,7 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
                     });
                     conflictString = conflictString.slice(0, -2);
                     document.getElementById('conflict-list').textContent = conflictString;
+                    updatePathsLink();
                 });
             });
             button.backgroundColor = 'green';
@@ -229,6 +244,7 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
                 document.getElementById('conflict-list').textContent = conflictString;
             });
         }
+        updatePathsLink();
     });
 });
 
@@ -268,4 +284,5 @@ window.onload = () => {
    Object.values(document.getElementsByClassName('student-button')).forEach(button => {
         students.push(button.textContent);
    });
+   updatePathsLink();
 }

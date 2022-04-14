@@ -1,0 +1,32 @@
+html, body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.paths-div {
+    display: flex;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.path {
+    margin: 10px;
+}
+table, tr, td {
+    border: solid black 1px;
+}
+table {
+    margin: 20px 40px 0 40px;
+    min-width: 1100px;
+    border-collapse: collapse;
+}
+tr {
+    min-height: 48px;
+}
+td {
+    font-size: 20px;
+    min-width: 48px;
+    text-align: center;
+    padding: 0;
+}

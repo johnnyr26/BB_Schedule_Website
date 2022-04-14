@@ -2,7 +2,7 @@ var express = require('express');
 const {google} = require('googleapis');
 const getConflicts = require('../helpers/getConflicts');
 const parseClasses = require('../helpers/parseClasses');
-const printSced = require('../helpers/printSched');
+const printSched = require('../helpers/printSched');
 const permutations = require('../helpers/permutations');
 const hasConflicts = require('../helpers/isConflict');
 const possiblePaths = require('../helpers/possiblePaths');
@@ -22,6 +22,67 @@ class Student {
         this.courses = [];
     }
 }
+
+router.get('/paths', (req, res) => {
+    const sheets = google.sheets('v4');
+    sheets.spreadsheets.values.get({
+        spreadsheetId: '1Y2M_NX8f8nmf8Bj-W3bo8aat7ZMvC2cHTmOHV5H3yOg',
+        range: 'A1:100000',
+        key: 'AIzaSyCpijldE4DDH_fTsapnbzFUtYYCDwutZG4'
+    }, (error, response) => {
+        if (error || !response.data.values) {
+            return console.log('The API returned an error: ' + err);
+        }
+        const schedules = response.data.values.flat();
+        const courses = [];
+        schedules.every(schedule => {
+            const course = parseClasses(schedule);
+
+            if (course instanceof Error) {
+                document.getElementById('conflict-list').textContent = 'There was an error processing the data.';
+                console.log('There was an error processing the data.');
+                return false;
+            }
+            const addedCourse = courses.find(addedCourse => addedCourse.name === course.name);
+            
+            if (addedCourse) {
+                addedCourse.periods.push(...course.periods);
+            } else {
+                courses.push(course);
+            }
+
+            return true;
+        });
+
+        courses.sort((a, b) => a.name > b.name ? 1 : -1);
+        courses.map(course => {
+            course.periods.map(section => {
+                return section.sort((a, b) => {
+                    if (course.name === 'English 9 101010') {
+                        console.log('English periods', a, b);
+                    }
+                    return parseInt(a) - parseInt(b);
+                });
+            });
+            return course.periods.sort((a, b) => {
+                return parseInt(a[0]) - parseInt(b[0]);
+            })
+        });
+        if (req.query.courses) {
+            const queryCourses = req.query.courses.split(',');
+            if (queryCourses.length > 12) {
+                return;
+            }
+            const searchedCourses = courses.filter(course => queryCourses.includes(course.name));
+
+            const noConflictPaths = possiblePaths(searchedCourses);
+
+            return res.render('paths', { noConflictPaths, searchedCourses });
+        }
+        return res.render('paths');
+    });
+
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -69,14 +130,6 @@ router.get('/', function(req, res, next) {
             let conflictedCourses = getConflicts(searchedCourses);
             const flattenedArray = [].concat.apply([], conflictedCourses);
             conflictedCourses = [...new Set(flattenedArray)];
-
-            const noConflictPaths = possiblePaths(searchedCourses);
-
-            console.log(noConflictPaths.map(path => path.map(course => `${course.name} ${course.section}`)));
-
-            
-
-            printSced(searchedCourses);
 
             return res.send({ conflictedCourses });
         }

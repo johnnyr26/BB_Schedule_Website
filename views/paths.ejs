@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Schedule</title>
+    <link href="/stylesheets/paths.css" rel="stylesheet" type="text/css" />
+
+  </head>
+  <body>
+    <table>
+      <thead>
+        <th>Classes</th>
+        <th>1A</th>
+        <th>1B</th>
+        <th>2A</th>
+        <th>2B</th>
+        <th>3A</th>
+        <th>3B</th>
+        <th>4A</th>
+        <th>4B</th>
+        <th>5A</th>
+        <th>5B</th>
+        <th>6A</th>
+        <th>6B</th>
+        <th>7A</th>
+        <th>7B</th>
+        <th>8A</th>
+        <th>8B</th>
+      </thead>
+      <% searchedCourses.forEach(course => { %>
+        <tr>
+          <td><%= course.name %></td>
+          <% for (let i = 1; i <= 16; i ++) { %>
+            <% const period = course.periods.findIndex(periods => periods.includes('' + i)); %>
+            <% if (period !== -1) { %>
+              <% if (course.periods.length === 1) { %>
+                <td>S</td>
+              <% } else {%>
+                <td><%= String.fromCharCode(97 + period).toUpperCase() %></td>
+              <% } %>
+            <% } else { %>
+              <td></td>
+            <% } %>
+          <% } %>
+        </tr>
+      <% }); %>
+    </table>
+    <div class="paths-div">
+      <% noConflictPaths.forEach((path, index) => { %>
+        <div class="path">
+          <h1>Path <%= index + 1 %></h1>
+          <% path.forEach(course => { %>
+          <p>
+              Period <%= course.periods.join(' ') %>: <%= course.name %>
+          </p>
+          <% }); %>
+          <br>
+        </div>
+      <% }); %>
+    </div>
+  </body>
+</html>
