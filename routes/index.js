@@ -58,9 +58,6 @@ router.get('/paths', (req, res) => {
         courses.map(course => {
             course.periods.map(section => {
                 return section.sort((a, b) => {
-                    if (course.name === 'English 9 101010') {
-                        console.log('English periods', a, b);
-                    }
                     return parseInt(a) - parseInt(b);
                 });
             });
@@ -196,7 +193,7 @@ router.get('/', function(req, res, next) {
                     }
                 });
                 if (setCourseConstant) {
-                    setCourseConstant.roster = students;
+                    setCourseConstant.roster.push(...students);
                 }
             });
             const students = new Set();

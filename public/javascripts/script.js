@@ -167,7 +167,9 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
             }
             resetButtonColors();
             resetClassNames();
+            document.getElementById('conflict-list').textContent = '';
             if (wasGreen) {
+                updatePathsLink();
                 return;
             }
             const studentName = button.textContent;
