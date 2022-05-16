@@ -3,6 +3,7 @@ const students = [];
 // whoever has to read this atrocity...just two words...my apologies
 
 const updatePathsLink = () => {
+    console.log(document.querySelectorAll('.squareOn'));
     if (document.querySelectorAll('.squareOn').length === 0) {
         document.querySelector('#paths').style.display = 'none';
     } else {
@@ -52,6 +53,7 @@ document.getElementById('student-search').addEventListener('keyup', e => {
 
     resetButtonColors();
     resetStudentButtonBackground();
+    updatePathsLink();
 
     document.getElementById('conflict-list').textContent = '';
     document.getElementById('student-buttons').innerHTML = '';
@@ -63,10 +65,10 @@ document.getElementById('student-search').addEventListener('keyup', e => {
         button.id = studentName;
         button.textContent = studentName;
         button.addEventListener('click', () => {
-            if (button.className !== 'squareOn' && button.className !== 'squareOff' && button.className !== 'student-button') {
+            if (!button.classList.contains('squareOn') && !button.classList.contains('squareOff') && !button.classList.contains('student-button')) {
                 return;
             }
-            if (button.className === 'student-button') {
+            if (button.classList.contains('student-button')) {
                 let wasGreen = button.backgroundColor === 'green' ? true : false;
                 // some nasty code but absolutely necessary for now because after button color resets, we have to know whether the button was previously green
                 resetButtonColors();
@@ -74,6 +76,7 @@ document.getElementById('student-search').addEventListener('keyup', e => {
                 
                 document.getElementById('conflict-list').textContent = '';
                 if (wasGreen) {
+                    updatePathsLink();
                     return;
                 }
                 const studentName = button.textContent;
@@ -106,10 +109,13 @@ document.getElementById('student-search').addEventListener('keyup', e => {
                         });
                         conflictString = conflictString.slice(0, -2);
                         document.getElementById('conflict-list').textContent = conflictString;
+                        updatePathsLink();
                     });
                 });
                 button.backgroundColor = 'green';
                 button.style.backgroundColor = 'green';
+                button.classList.remove('squareOff');
+                button.classList.add('squareOn');
                 return;
             }
             button.className = button.className === 'squareOff' ? 'squareOn' : 'squareOff';
@@ -207,6 +213,8 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
             });
             button.backgroundColor = 'green';
             button.style.backgroundColor = 'green';
+            button.classList.remove('squareOff');
+            button.classList.add('squareOn');
             return;
         } 
         button.className = button.className === 'squareOff' ? 'squareOn' : 'squareOff';
@@ -230,7 +238,7 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
                 let { conflictedCourses } = response;
                 Object.values(document.getElementsByClassName('squareOn')).forEach(selectedCourseButton => {
                     selectedCourseButton.backgroundColor = 'green';
-                    selectedCourseButton.style.backgroundColor = 'green'
+                    selectedCourseButton.style.backgroundColor = 'green';
                 });
                 if (!conflictedCourses) {
                     return;
@@ -256,6 +264,8 @@ const resetButtonColors = () => {
         button.backgroundColor = 'grey';
         button.style.backgroundColor = 'grey';
         button.style.border = 'solid black 1px';
+        button.classList.remove('squareOn');
+        button.classList.add('squareOff');
     });
     resetStudentButtonBackground();
 }
@@ -267,6 +277,8 @@ const resetStudentButtonBackground = () => {
     }
     selectedStudentButton.backgroundColor = 'grey';
     selectedStudentButton.style.backgroundColor = 'grey';
+    selectedStudentButton.classList.remove('squareOn');
+    selectedStudentButton.classList.add('squareOff');
 }
 
 const resetBorderColors = () => {
@@ -279,7 +291,8 @@ const resetBorderColors = () => {
 const resetClassNames = () => {
     const courseButtons = Object.values(document.getElementsByTagName('button')).filter(button => button.className === 'squareOn' || button.className === 'squareOff');
     courseButtons.forEach(button => {
-        button.className = 'squareOff';
+        button.classList.remove('squareOn');
+        button.classList.add('squareOff');
     });
 }
 window.onload = () => {
