@@ -3,7 +3,6 @@ const students = [];
 // whoever has to read this atrocity...just two words...my apologies
 
 const updatePathsLink = () => {
-    console.log(document.querySelectorAll('.squareOn'));
     if (document.querySelectorAll('.squareOn').length === 0) {
         document.querySelector('#paths').style.display = 'none';
     } else {
@@ -73,7 +72,7 @@ document.getElementById('student-search').addEventListener('keyup', e => {
                 // some nasty code but absolutely necessary for now because after button color resets, we have to know whether the button was previously green
                 resetButtonColors();
                 resetClassNames();
-                
+
                 document.getElementById('conflict-list').textContent = '';
                 if (wasGreen) {
                     updatePathsLink();
@@ -163,10 +162,10 @@ document.getElementById('reset').addEventListener('click', () => {
 
 Object.values(document.getElementsByTagName('button')).forEach(button => {
     button.addEventListener('click', () => {
-        if (button.className !== 'squareOn' && button.className !== 'squareOff' && button.className !== 'student-button') {
+        if (!button.classList.contains('squareOn') && !button.classList.contains('squareOff') && !button.classList.contains('student-button')) {
             return;
         }
-        if (button.className === 'student-button') {
+        if (button.classList.contains('student-button')) {
             let wasGreen = false;
             if (button.backgroundColor === 'green') {
                 wasGreen = true;
