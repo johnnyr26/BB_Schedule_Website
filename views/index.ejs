@@ -8,20 +8,11 @@
   </head>
   <body>
     <div id="main-body">
-      <div id="students">
-        <input type="text" class="search-bar" placeholder="Search student" id="student-search">
-        <div id="student-buttons">
-          <% students.forEach(student => { %>
-            <button class="student-button" id="<%= student %>"><%= student %></button>
-          <% }); %>
-        </div>
-      </div>
       <div id="courses">
         <div id="text-area">
             <input type="text" class="search-bar" id="course-search" placeholder="Search Courses"/>
         </div>
         <div class="buttons">
-          <a id="paths" href="/paths">Paths</a>
           <button id="reset">Reset</button>
         </div>
         <p id="conflict-list"></p>
