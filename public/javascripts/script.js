@@ -68,10 +68,10 @@ Object.values(document.getElementsByTagName('button')).forEach(button => {
                 }
                 let conflictString = '';
                 conflictedCourses.forEach(conflictCourse => {
-                    if (document.getElementById(conflictCourse.name).backgroundColor === 'green') {
-                        document.getElementById(conflictCourse.name).style.backgroundColor = 'red';
+                    if (document.getElementById(conflictCourse).backgroundColor === 'green') {
+                        document.getElementById(conflictCourse).style.backgroundColor = 'red';
                     }
-                    conflictString += `${conflictCourse.name}, `;
+                    conflictString += `${conflictCourse}, `;
                 });
                 conflictString = conflictString.slice(0, -2);
                 document.getElementById('conflict-list').textContent = conflictString;
