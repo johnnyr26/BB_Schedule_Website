@@ -32,7 +32,7 @@ router.get('/', function(req, res, next) {
         key: 'AIzaSyCpijldE4DDH_fTsapnbzFUtYYCDwutZG4'
     }, (error, response) => {
         if (error || !response.data.values) {
-            return console.log('The API returned an error: ' + err);
+            return console.log('The API returned an error: ' + error);
         }
         const schedules = response.data.values.flat();
         const courses = [];
